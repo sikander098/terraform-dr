@@ -46,11 +46,8 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -lock-timeout=160s -out=tfplan
 
       - name: Terraform Apply (manual only)
         if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -auto-approve tfplan
-        
-
-
+        run: terraform apply -lock-timeout=60s -auto-approve tfplan
