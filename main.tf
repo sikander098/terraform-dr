@@ -10,7 +10,7 @@ locals {
 }
 
 module "networking" {
-  source           = "../modules/networking"
+  source           = "./modules/networking"
   vpc_cidr         = local.vpc_cidr
   access_ip        = var.access_ip
   public_sn_count  = 2
@@ -21,7 +21,7 @@ module "networking" {
 }
 
 module "compute" {
-  source                 = "../modules/compute"
+  source                 = "./modules/compute"
   frontend_app_sg        = module.networking.frontend_app_sg
   backend_app_sg         = module.networking.backend_app_sg
   bastion_sg             = module.networking.bastion_sg
@@ -36,7 +36,7 @@ module "compute" {
 }
 
 module "database" {
-  source               = "../modules/database"
+  source               = "./modules/database"
   db_storage           = 10
   db_engine_version    = "8.0.41"
   db_instance_class    = "db.t3.micro"
@@ -45,16 +45,12 @@ module "database" {
   dbpassword           = var.dbpassword
   db_identifier        = "three-tier-db"
   skip_db_snapshot     = true
-
-  # ✅ fix: correctly output this from networking module
   rds_sg               = module.networking.rds_sg
-
-  # ✅ fix: remove [0] and output correct value from networking module
   db_subnet_group_name = module.networking.db_subnet_group_name
 }
 
 module "loadbalancing" {
-  source            = "../modules/loadbalancing"
+  source            = "./modules/loadbalancing"
   lb_sg             = module.networking.lb_sg
   public_subnets    = module.networking.public_subnets
   tg_port           = 80
