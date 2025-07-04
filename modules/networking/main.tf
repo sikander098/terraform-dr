@@ -62,7 +62,7 @@ resource "aws_route_table" "three_tier_public_rt" {
 resource "aws_route" "default_public_route" {
   route_table_id         = aws_route_table.three_tier_public_rt.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.three_tier_internet_gateway.id
+  gateway_id             = aws_internet_gateway.three_tier_internet_gateway.id
 }
 
 resource "aws_route_table_association" "three_tier_public_assoc" {
@@ -79,8 +79,8 @@ resource "aws_eip" "three_tier_nat_eip" {
 }
 
 resource "aws_nat_gateway" "three_tier_ngw" {
-  allocation_id     = aws_eip.three_tier_nat_eip.id
-  subnet_id         = aws_subnet.three_tier_public_subnets[1].id
+  allocation_id = aws_eip.three_tier_nat_eip.id
+  subnet_id     = aws_subnet.three_tier_public_subnets[1].id
 }
 
 
@@ -100,7 +100,7 @@ resource "aws_subnet" "three_tier_private_subnets" {
 
 resource "aws_route_table" "three_tier_private_rt" {
   vpc_id = aws_vpc.three_tier_vpc.id
-  
+
   tags = {
     Name = "three_tier_private"
   }
@@ -109,7 +109,7 @@ resource "aws_route_table" "three_tier_private_rt" {
 resource "aws_route" "default_private_route" {
   route_table_id         = aws_route_table.three_tier_private_rt.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.three_tier_ngw.id
+  nat_gateway_id         = aws_nat_gateway.three_tier_ngw.id
 }
 
 

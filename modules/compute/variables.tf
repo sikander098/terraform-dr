@@ -8,7 +8,7 @@ variable "lb_tg_name" {}
 variable "lb_tg" {}
 
 variable "ssh_key" {
-  type  = string
+  type = string
 }
 
 variable "bastion_instance_count" {
