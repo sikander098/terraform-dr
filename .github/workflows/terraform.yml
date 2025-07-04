@@ -12,14 +12,12 @@ env:
   AWS_REGION: us-east-1
 
 jobs:
-  terraform:
-    name: Terraform Plan & Apply
+  terraform-plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: .
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -48,8 +46,26 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      - name: Terraform Apply (manual only)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: tfplan
+
+  terraform-apply:
+    name: Terraform Apply
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    environment: 
+      name: production  # Matches the GitHub Environment
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+
+      - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-
-
